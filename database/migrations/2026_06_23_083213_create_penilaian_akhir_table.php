@@ -16,11 +16,12 @@ return new class extends Migration
             $table->foreignId('peserta_id')->unique()->constrained('profil_peserta')->onDelete('cascade');
             $table->foreignId('mentor_id')->constrained('users')->onDelete('cascade');
 
+            // Hapus atau ganti baris nilai yang lama dengan 5 komponen baru ini:
+            $table->unsignedTinyInteger('nilai_keterampilan_teknis')->nullable();
+            $table->unsignedTinyInteger('nilai_pemecahan_masalah')->nullable();
+            $table->unsignedTinyInteger('nilai_kedisiplinan')->nullable();
+            $table->unsignedTinyInteger('nilai_kerjasama')->nullable();
             $table->unsignedTinyInteger('nilai_kehadiran')->nullable();
-            $table->unsignedTinyInteger('nilai_logbook')->nullable();
-            $table->unsignedTinyInteger('nilai_laporan_akhir')->nullable();
-            $table->unsignedTinyInteger('nilai_sikap')->nullable();
-            $table->unsignedTinyInteger('nilai_akhir')->nullable();
 
             $table->enum('status_kelulusan', ['Lulus', 'Tidak Lulus', 'Belum Dinilai'])
                   ->default('Belum Dinilai');
