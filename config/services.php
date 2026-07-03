@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'certificate_service' => [
+        'base_uri' => env('CERTIFICATE_SERVICE_URL'),
+    ],
+
 ];

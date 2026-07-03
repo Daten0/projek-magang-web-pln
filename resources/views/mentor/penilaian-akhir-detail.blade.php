@@ -127,48 +127,59 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 mb-6">
 
-                    {{-- Kinerja --}}
+                    {{-- Keterampilan Teknis --}}
                     <div>
                         <div class="flex items-center justify-between mb-1">
-                            <label for="kinerja" class="text-sm font-semibold text-slate-700">Kinerja (Work Quality)</label>
-                            <span class="text-sm font-bold text-blue-600" id="kinerjaValue">{{ $peserta['nilai']['kinerja'] }}</span>
+                            <label for="keterampilan_teknis" class="text-sm font-semibold text-slate-700">Keterampilan Teknis (Work Quality)</label>
+                            <span class="text-sm font-bold text-blue-600" id="teknisValue">{{ $peserta['nilai']['technicalAbility'] }}</span>
                         </div>
-                        <input type="range" id="kinerja" name="kinerja" min="0" max="100" value="{{ $peserta['nilai']['kinerja'] }}"
+                        <input type="range" id="keterampilan_teknis" name="keterampilan_teknis" min="0" max="100" value="{{ $peserta['nilai']['technicalAbility'] }}"
                                class="w-full accent-blue-600" oninput="updateSkor()">
-                        <p class="text-xs text-slate-400 mt-1">Ketepatan, ketelitian, dan hasil kerja nyata.</p>
+                        <p class="text-xs text-slate-400 mt-1">Penguasaan materi pekerjaan, kualitas hasil tugas, serta kelancaran menggunakan alat atau sistem kerja perusahaan</p>
                     </div>
 
-                    {{-- Sikap --}}
+                    {{-- Pemecahan Masalah & Inovasi --}}
                     <div>
                         <div class="flex items-center justify-between mb-1">
-                            <label for="sikap" class="text-sm font-semibold text-slate-700">Sikap (Ethics & Behavior)</label>
-                            <span class="text-sm font-bold text-blue-600" id="sikapValue">{{ $peserta['nilai']['sikap'] }}</span>
+                            <label for="pemecahan_masalah" class="text-sm font-semibold text-slate-700">Pemecahan Masalah & Inovasi</label>
+                            <span class="text-sm font-bold text-blue-600" id="masalahValue">{{ $peserta['nilai']['problemSolve'] }}</span>
                         </div>
-                        <input type="range" id="sikap" name="sikap" min="0" max="100" value="{{ $peserta['nilai']['sikap'] }}"
+                        <input type="range" id="pemecahan_masalah" name="pemecahan_masalah" min="0" max="100" value="{{ $peserta['nilai']['problemSolve'] }}"
                                class="w-full accent-blue-600" oninput="updateSkor()">
-                        <p class="text-xs text-slate-400 mt-1">Kedisiplinan, etika kerja, dan tata krama.</p>
+                        <p class="text-xs text-slate-400 mt-1">Inisiatif dan Kreativitas dalam mencari solusi atau memberikan ide baru saat bekerja</p>
                     </div>
 
-                    {{-- Komunikasi --}}
+                    {{-- Kedisiplinan & Sikap Kerja --}}
                     <div>
                         <div class="flex items-center justify-between mb-1">
-                            <label for="komunikasi" class="text-sm font-semibold text-slate-700">Komunikasi</label>
-                            <span class="text-sm font-bold text-blue-600" id="komunikasiValue">{{ $peserta['nilai']['komunikasi'] }}</span>
+                            <label for="kedisiplinan" class="text-sm font-semibold text-slate-700">Kedisiplinan & Sikap Kerja</label>
+                            <span class="text-sm font-bold text-blue-600" id="disiplinValue">{{ $peserta['nilai']['disiplin'] }}</span>
                         </div>
-                        <input type="range" id="komunikasi" name="komunikasi" min="0" max="100" value="{{ $peserta['nilai']['komunikasi'] }}"
+                        <input type="range" id="kedisiplinan" name="kedisiplinan" min="0" max="100" value="{{ $peserta['nilai']['disiplin'] }}"
                                class="w-full accent-blue-600" oninput="updateSkor()">
-                        <p class="text-xs text-slate-400 mt-1">Kemampuan berkoordinasi dan menyampaikan ide.</p>
+                        <p class="text-xs text-slate-400 mt-1">Etos Kerja, Tanggung Jawab.</p>
                     </div>
 
-                    {{-- Kerjasama --}}
+                    {{-- Kerjasama Tim & Komunikasi --}}
                     <div>
                         <div class="flex items-center justify-between mb-1">
-                            <label for="kerjasama" class="text-sm font-semibold text-slate-700">Kerjasama (Teamwork)</label>
+                            <label for="kerjasama" class="text-sm font-semibold text-slate-700">Kerjasama Tim & Komunikasi</label>
                             <span class="text-sm font-bold text-blue-600" id="kerjasamaValue">{{ $peserta['nilai']['kerjasama'] }}</span>
                         </div>
                         <input type="range" id="kerjasama" name="kerjasama" min="0" max="100" value="{{ $peserta['nilai']['kerjasama'] }}"
                                class="w-full accent-blue-600" oninput="updateSkor()">
                         <p class="text-xs text-slate-400 mt-1">Proaktifitas dalam kolaborasi tim.</p>
+                    </div>
+
+                    {{-- Kehadiran --}}
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="kehadiran" class="text-sm font-semibold text-slate-700">Kehadiran</label>
+                            <span class="text-sm font-bold text-blue-600" id="kehadiranValue">{{ $peserta['nilai']['kehadiran'] }}</span>
+                        </div>
+                        <input type="range" id="kehadiran" name="kehadiran" min="0" max="100" value="{{ $peserta['nilai']['kehadiran'] }}"
+                               class="w-full accent-blue-600" oninput="updateSkor()">
+                        <p class="text-xs text-slate-400 mt-1">Kehadiran</p>
                     </div>
 
                 </div>
@@ -215,19 +226,25 @@
     {{-- Hitung otomatis skor akhir & kategori setiap kali slider digeser --}}
     <script>
         function updateSkor() {
-            const kinerja    = parseInt(document.getElementById('kinerja').value);
-            const sikap      = parseInt(document.getElementById('sikap').value);
-            const komunikasi = parseInt(document.getElementById('komunikasi').value);
-            const kerjasama  = parseInt(document.getElementById('kerjasama').value);
+            // Ambil nilai dari 5 input (gunakan || 0 untuk mencegah error jika input kosong)
+            const teknis    = parseInt(document.getElementById('keterampilan_teknis').value) || 0;
+            const masalah   = parseInt(document.getElementById('pemecahan_masalah').value) || 0;
+            const disiplin  = parseInt(document.getElementById('kedisiplinan').value) || 0;
+            const kerjasama = parseInt(document.getElementById('kerjasama').value) || 0;
+            const kehadiran = parseInt(document.getElementById('kehadiran').value) || 0;
 
-            document.getElementById('kinerjaValue').textContent    = kinerja;
-            document.getElementById('sikapValue').textContent      = sikap;
-            document.getElementById('komunikasiValue').textContent = komunikasi;
-            document.getElementById('kerjasamaValue').textContent  = kerjasama;
+            // Update text/label di samping slider jika ada (sesuaikan ID text content-nya)
+            if(document.getElementById('teknisValue')) document.getElementById('teknisValue').textContent = teknis;
+            if(document.getElementById('masalahValue')) document.getElementById('masalahValue').textContent = masalah;
+            if(document.getElementById('disiplinValue')) document.getElementById('disiplinValue').textContent = disiplin;
+            if(document.getElementById('kerjasamaValue')) document.getElementById('kerjasamaValue').textContent = kerjasama;
+            if(document.getElementById('kehadiranValue')) document.getElementById('kehadiranValue').textContent = kehadiran;
 
-            const skor = (kinerja + sikap + komunikasi + kerjasama) / 4;
+            // Hitung Rata-rata
+            const skor = (teknis + masalah + disiplin + kerjasama + kehadiran) / 5;
             document.getElementById('skorAkhir').textContent = skor.toFixed(2);
 
+            // Logika predikat
             let kategori;
             if (skor >= 90)      kategori = 'Sangat Baik';
             else if (skor >= 80) kategori = 'Baik';
@@ -237,7 +254,8 @@
             document.getElementById('kategoriSkor').textContent = kategori;
         }
 
-        updateSkor();
+        // Panggil fungsi ini jika menggunakan input slider (oninput/onchange)
+        // updateSkor(); 
     </script>
 
 @endsection
