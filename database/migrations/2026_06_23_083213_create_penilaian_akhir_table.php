@@ -26,6 +26,10 @@ return new class extends Migration
             $table->enum('status_kelulusan', ['Lulus', 'Tidak Lulus', 'Belum Dinilai'])
                   ->default('Belum Dinilai');
 
+            $table->enum('status_performa', ['SANGAT BAIK', 'BAIK', 'CUKUP', 'BELUM DINILAI'])
+                  ->default('BELUM DINILAI');
+
+            
             $table->text('catatan')->nullable();
             $table->timestamp('dinilai_pada')->nullable();
 

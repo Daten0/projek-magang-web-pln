@@ -131,9 +131,9 @@
                     <div>
                         <div class="flex items-center justify-between mb-1">
                             <label for="keterampilan_teknis" class="text-sm font-semibold text-slate-700">Keterampilan Teknis (Work Quality)</label>
-                            <span class="text-sm font-bold text-blue-600" id="teknisValue">{{ $peserta['nilai']['technicalAbility'] }}</span>
+                            <span class="text-sm font-bold text-blue-600" id="teknisValue">{{ $peserta['nilai']['teknis'] }}</span>
                         </div>
-                        <input type="range" id="keterampilan_teknis" name="keterampilan_teknis" min="0" max="100" value="{{ $peserta['nilai']['technicalAbility'] }}"
+                        <input type="range" id="keterampilan_teknis" name="keterampilan_teknis" min="0" max="100" value="{{ $peserta['nilai']['teknis'] }}"
                                class="w-full accent-blue-600" oninput="updateSkor()">
                         <p class="text-xs text-slate-400 mt-1">Penguasaan materi pekerjaan, kualitas hasil tugas, serta kelancaran menggunakan alat atau sistem kerja perusahaan</p>
                     </div>
@@ -142,9 +142,9 @@
                     <div>
                         <div class="flex items-center justify-between mb-1">
                             <label for="pemecahan_masalah" class="text-sm font-semibold text-slate-700">Pemecahan Masalah & Inovasi</label>
-                            <span class="text-sm font-bold text-blue-600" id="masalahValue">{{ $peserta['nilai']['problemSolve'] }}</span>
+                            <span class="text-sm font-bold text-blue-600" id="masalahValue">{{ $peserta['nilai']['masalah'] }}</span>
                         </div>
-                        <input type="range" id="pemecahan_masalah" name="pemecahan_masalah" min="0" max="100" value="{{ $peserta['nilai']['problemSolve'] }}"
+                        <input type="range" id="pemecahan_masalah" name="pemecahan_masalah" min="0" max="100" value="{{ $peserta['nilai']['masalah'] }}"
                                class="w-full accent-blue-600" oninput="updateSkor()">
                         <p class="text-xs text-slate-400 mt-1">Inisiatif dan Kreativitas dalam mencari solusi atau memberikan ide baru saat bekerja</p>
                     </div>
@@ -246,10 +246,10 @@
 
             // Logika predikat
             let kategori;
-            if (skor >= 90)      kategori = 'Sangat Baik';
-            else if (skor >= 80) kategori = 'Baik';
-            else if (skor >= 70) kategori = 'Cukup';
-            else                 kategori = 'Perlu Bimbingan';
+            if (skor >= 90)      kategori = 'SANGAT BAIK';
+            else if (skor >= 80) kategori = 'BAIK';
+            else if (skor >= 70) kategori = 'CUKUP';
+            else                 kategori = 'BELUM DINILAI';
 
             document.getElementById('kategoriSkor').textContent = kategori;
         }

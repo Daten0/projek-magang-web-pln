@@ -19,12 +19,19 @@ class PenilaianAkhir extends Model
         'nilai_kehadiran',
         'nilai_akhir',
         'status_kelulusan',
+        'status_performa',
         'catatan',
         'dinilai_pada',
     ];
 
     protected $casts = [
-        'dinilai_pada' => 'datetime',
+        'nilai_keterampilan_teknis' => 'integer',
+        'nilai_pemecahan_masalah'   => 'integer',
+        'nilai_kedisiplinan'        => 'integer',
+        'nilai_kerjasama'           => 'integer',
+        'nilai_kehadiran'           => 'integer',
+        'nilai_akhir'               => 'integer',
+        'dinilai_pada'              => 'datetime',
     ];
 
     public function peserta()
