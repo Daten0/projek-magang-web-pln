@@ -153,74 +153,172 @@
 
             {{-- Preview Sertifikat --}}
             <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                    <h3 class="font-semibold text-slate-700">Preview Sertifikat</h3>
+                <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <h3 class="font-semibold text-slate-700">Preview Sertifikat</h3>
+                        <p class="text-sm text-slate-500">Tampilkan satu halaman, geser untuk melihat halaman berikutnya.</p>
+                    </div>
                     <div class="flex items-center gap-2 text-slate-400">
-                        <button class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center transition">
+                        <button id="slidePrevBtn" type="button" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition" aria-label="Halaman sebelumnya">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0Z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                             </svg>
                         </button>
-                        <button class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center transition">
+                        <button id="slideNextBtn" type="button" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition" aria-label="Halaman berikutnya">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V5a1 1 0 0 1 1-1h3M4 16v3a1 1 0 0 0 1 1h3M16 4h3a1 1 0 0 1 1 1v3M16 20h3a1 1 0 0 0 1-1v-3"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                             </svg>
                         </button>
                     </div>
                 </div>
 
-                {{-- Sertifikat --}}
+                {{-- Sertifikat slider --}}
                 <div class="p-6">
-                    <div class="border-4 border-blue-800 rounded-xl p-6 bg-white relative overflow-hidden">
+                    <div class="space-y-5">
+                        <div id="sertifikatSlider" class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-sm">
 
-                        {{-- Ornamen sudut --}}
-                        <div class="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-blue-300 rounded-tl-xl opacity-40"></div>
-                        <div class="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-blue-300 rounded-br-xl opacity-40"></div>
-
-                        <div class="text-right mb-3">
-                            <p class="text-xs font-bold text-blue-700">Sertifikat Kompetensi</p>
-                            <p class="text-xs text-slate-400">ID: PLN/CERT/2024/0042</p>
-                        </div>
-
-                        <div class="text-center">
-                            <p class="text-2xl font-extrabold text-blue-800 tracking-widest mb-1">SERTIFIKAT MAGANG</p>
-                            <p class="text-xs text-slate-500 mb-3">Diberikan kepada:</p>
-                            <p class="text-3xl font-black text-blue-900 tracking-wide mb-4">{{ strtoupper($peserta['nama']) }}</p>
-                            <p class="text-xs text-slate-600 max-w-xs mx-auto leading-relaxed">
-                                Telah menyelesaikan program magang di PT PLN (Persero) Pusat pada Divisi {{ $peserta['divisi'] }}
-                                periode {{ $peserta['periode'] }} dengan hasil sangat memuaskan.
-                            </p>
-                        </div>
-
-                        <div class="mt-5 flex justify-between items-end text-xs text-slate-500">
-                            <span>Jakarta, {{ $peserta['tanggal_terbit'] }}</span>
-                            <div class="text-center">
-                                <div class="w-20 border-b border-slate-300 mb-1"></div>
-                                <p class="font-semibold text-slate-600">Direktur Human Capital</p>
+                            {{-- Slide 1 --}}
+                            <div data-sertifikat-slide class="slide block">
+                                <div class="relative">
+                                    <img src="{{ route('serti-template.file', '53.svg') }}" alt="Template 53" class="w-full h-auto block" />
+                                    <div class="absolute inset-0 pointer-events-none">
+                                        <div class="absolute inset-x-0 top-[18%] text-center px-4">
+                                            <p class="text-xs font-semibold text-slate-600 tracking-[0.35em] uppercase">Sertifikat Magang</p>
+                                            <p class="mt-4 text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-[0.12em] leading-tight">{{ strtoupper($peserta['nama']) }}</p>
+                                            <p class="mt-4 text-sm text-slate-700 max-w-xl mx-auto leading-relaxed">
+                                                Telah menyelesaikan program magang di PT PLN (Persero) pada Divisi {{ $peserta['divisi'] }} periode {{ $peserta['periode'] }}.
+                                            </p>
+                                        </div>
+                                        <div class="absolute left-5 bottom-24 text-sm text-slate-700 space-y-2">
+                                            <div><span class="font-semibold">Universitas</span>: {{ $peserta['universitas'] }}</div>
+                                            <div><span class="font-semibold">Mentor</span>: {{ $peserta['mentor'] }}</div>
+                                            <div><span class="font-semibold">Tanggal Terbit</span>: {{ $peserta['tanggal_terbit'] }}</div>
+                                        </div>
+                                        <div class="absolute right-5 bottom-24 text-sm text-slate-700 text-right space-y-2">
+                                            <div><span class="font-semibold">Nomor</span>: PLN/CERT/{{ date('Y') }}/{{ str_pad($peserta['id'], 4, '0', STR_PAD_LEFT) }}</div>
+                                            <div><span class="font-semibold">Status</span>: {{ $penilaianakhir['status_kelulusan'] ?? 'Belum Dinilai' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
+                            {{-- Slide 2 --}}
+                            <div data-sertifikat-slide class="slide hidden">
+                                <div class="relative">
+                                    <img src="{{ route('serti-template.file', '54.svg') }}" alt="Template 54" class="w-full h-auto block" />
+                                    <div class="absolute inset-0 pointer-events-none">
+                                        <div class="absolute inset-x-0 top-[14%] text-center px-4">
+                                            <p class="text-xs font-semibold text-slate-600 tracking-[0.35em] uppercase">Ringkasan Penilaian Akhir</p>
+                                            <p class="mt-3 text-xl font-bold text-slate-900 tracking-tight">Hasil Kriteria Penilaian</p>
+                                        </div>
+                                        <div class="absolute inset-x-5 top-[34%] grid grid-cols-1 gap-3 text-sm text-slate-700">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
+                                                    <p class="font-semibold text-slate-700">Keterampilan Teknis</p>
+                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['keterampilan_teknis'] ?? '—' }}%</p>
+                                                </div>
+                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
+                                                    <p class="font-semibold text-slate-700">Pemecahan Masalah</p>
+                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['pemecahan_masalah'] ?? '—' }}%</p>
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
+                                                    <p class="font-semibold text-slate-700">Kedisiplinan</p>
+                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['kedisiplinan'] ?? '—' }}%</p>
+                                                </div>
+                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
+                                                    <p class="font-semibold text-slate-700">Kerjasama</p>
+                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['kerjasama'] ?? '—' }}%</p>
+                                                </div>
+                                            </div>
+                                            <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
+                                                <p class="font-semibold text-slate-700">Kehadiran</p>
+                                                <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['kehadiran'] ?? '—' }}%</p>
+                                            </div>
+                                        </div>
+                                        <div class="absolute left-5 bottom-32 w-[46%] text-sm text-slate-700 bg-white/90 rounded-3xl p-4 border border-slate-200">
+                                            <p class="font-semibold text-slate-700">Catatan Mentor</p>
+                                            <p class="mt-3 leading-relaxed text-slate-600">{{ $penilaianakhir['catatan'] ?? 'Belum ada catatan.' }}</p>
+                                        </div>
+                                        <div class="absolute right-5 bottom-28 w-[42%] text-right text-slate-700 bg-white/90 rounded-3xl p-4 border border-slate-200">
+                                            <p class="text-xs uppercase font-semibold tracking-[0.18em] text-slate-500">Nilai Akhir</p>
+                                            <p class="mt-3 text-4xl font-black text-slate-900">{{ $penilaianakhir['nilai_akhir'] ?? '0' }}</p>
+                                            <p class="mt-2 uppercase tracking-[0.18em] font-semibold {{ ($penilaianakhir['status_kelulusan'] ?? '') === 'Lulus' ? 'text-emerald-600' : 'text-amber-500' }}">
+                                                {{ $penilaianakhir['status_kelulusan'] ?? 'Belum Dinilai' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                <button data-slide-index="0" type="button" class="slide-tab inline-flex items-center justify-center px-3 py-2 rounded-2xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold transition">Halaman 1</button>
+                                <button data-slide-index="1" type="button" class="slide-tab inline-flex items-center justify-center px-3 py-2 rounded-2xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold transition">Halaman 2</button>
+                            </div>
+                            <div class="text-sm text-slate-500">Halaman <span id="slideIndicator">1</span> dari 2</div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <a href="{{ route('serti-template.file', '53.svg') }}" download="template-53.svg" class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
+                                Download Template Halaman 1
+                            </a>
+                            <a href="{{ route('serti-template.file', '54.svg') }}" download="template-54.svg" class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
+                                Download Template Halaman 2
+                            </a>
+                            <a href="{{ route('admin.sertifikat.download', $peserta['id']) }}" class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-400 text-white text-sm font-semibold hover:bg-amber-500 transition">
+                                Download Sertifikat PDF
+                            </a>
+                        </div>
                     </div>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const slides = Array.from(document.querySelectorAll('[data-sertifikat-slide]'));
+                        const prevBtn = document.getElementById('slidePrevBtn');
+                        const nextBtn = document.getElementById('slideNextBtn');
+                        const indicator = document.getElementById('slideIndicator');
+                        const tabs = Array.from(document.querySelectorAll('[data-slide-index]'));
+                        let current = 0;
 
-                {{-- Tombol Preview & Download --}}
-                <div class="px-6 pb-6 flex gap-3">
-                    <button class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-xl transition">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        Preview Fullscreen
-                    </button>
-                    <button class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-amber-400 hover:bg-amber-500 text-white text-sm font-semibold rounded-xl transition">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v13M8 12l4 4 4-4"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16"/>
-                        </svg>
-                        Download PDF (High-Res)
-                    </button>
-                </div>
-            </div>
+                        function updateSlide(index) {
+                            if (index < 0 || index >= slides.length) {
+                                return;
+                            }
+                            slides[current].classList.add('hidden');
+                            slides[current].classList.remove('block');
+                            slides[index].classList.remove('hidden');
+                            slides[index].classList.add('block');
+                            tabs[current].classList.remove('bg-slate-900', 'text-white');
+                            tabs[current].classList.add('bg-white', 'text-slate-700');
+                            tabs[index].classList.remove('bg-white', 'text-slate-700');
+                            tabs[index].classList.add('bg-slate-900', 'text-white');
+                            current = index;
+                            indicator.textContent = current + 1;
+                            prevBtn.disabled = current === 0;
+                            nextBtn.disabled = current === slides.length - 1;
+                        }
+
+                        prevBtn.addEventListener('click', function () {
+                            updateSlide(current - 1);
+                        });
+
+                        nextBtn.addEventListener('click', function () {
+                            updateSlide(current + 1);
+                        });
+
+                        tabs.forEach(function (tab) {
+                            tab.addEventListener('click', function () {
+                                updateSlide(parseInt(this.dataset.slideIndex, 10));
+                            });
+                        });
+
+                        updateSlide(0);
+                    });
+                </script>
 
             {{-- Riwayat Sertifikat --}}
             <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -256,7 +354,6 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 

@@ -148,7 +148,18 @@ class SertifikatController extends Controller
             ];
         }
 
-        return view('admin.sertifikat-detail', compact('peserta', 'syarat', 'riwayat'));
+        $penilaianakhir = $p->penilaianAkhir ? [
+            'keterampilan_teknis' => $p->penilaianAkhir->keterampilan_teknis,
+            'pemecahan_masalah' => $p->penilaianAkhir->pemecahan_masalah,
+            'kedisiplinan' => $p->penilaianAkhir->kedisiplinan,
+            'kerjasama' => $p->penilaianAkhir->kerjasama,
+            'kehadiran' => $p->penilaianAkhir->kehadiran,
+            'catatan' => $p->penilaianAkhir->catatan,
+            'nilai_akhir' => $p->penilaianAkhir->nilai_akhir,
+            'status_kelulusan' => $p->penilaianAkhir->status_kelulusan,
+        ] : null;
+
+        return view('admin.sertifikat-detail', compact('peserta', 'syarat', 'riwayat', 'penilaianakhir'));
     }
 
     public function terbitkan(Request $request, $id)
@@ -182,5 +193,22 @@ class SertifikatController extends Controller
         return redirect()
             ->route('admin.sertifikat.show', $id)
             ->with('success', 'Sertifikat berhasil diterbitkan.');
+    }
+
+    public function download($id)
+    {
+        $p = ProfilPeserta::with('sertifikat')->findOrFail($id);
+        $sertifikat = $p->sertifikat;
+
+        if (!$sertifikat || $sertifikat->status !== 'Terbit' || !$sertifikat->file_path) {
+            return back()->withErrors(['error' => 'File sertifikat belum tersedia atau belum diterbitkan.']);
+        }
+
+        $path = storage_path('app/public/' . $sertifikat->file_path);
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->download($path, 'Sertifikat_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $p->user->name) . '.pdf');
     }
 }

@@ -99,9 +99,24 @@ Route::middleware(['auth', 'role.admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/sertifikat', [AdminSertifikatController::class, 'index'])->name('sertifikat');
     Route::get('/sertifikat/{id}', [AdminSertifikatController::class, 'show'])->name('sertifikat.show');
     Route::post('/sertifikat/{id}/terbitkan', [AdminSertifikatController::class, 'terbitkan'])->name('sertifikat.terbitkan');
+    Route::get('/sertifikat/{id}/download', [AdminSertifikatController::class, 'download'])->name('sertifikat.download');
     Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan');
     Route::post('/pengaturan', [PengaturanController::class, 'store'])->name('pengaturan.store');
     Route::put('/pengaturan/{id}', [PengaturanController::class, 'update'])->name('pengaturan.update');
     Route::delete('/pengaturan/{id}', [PengaturanController::class, 'destroy'])->name('pengaturan.destroy');
     
 });
+
+Route::get('/serti-template/{filename}', function ($filename) {
+    $allowed = ['53.svg', '54.svg'];
+    if (!in_array($filename, $allowed, true)) {
+        abort(404);
+    }
+
+    $path = base_path('serti-template/' . $filename);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->file($path, ['Content-Type' => 'image/svg+xml']);
+})->name('serti-template.file');
