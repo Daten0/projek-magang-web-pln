@@ -20,19 +20,8 @@
         <h1 class="text-2xl font-bold text-blue-700">Detail Sertifikat:</h1>
         @if ($peserta['status_sertifikat'] === 'siap_diterbitkan')
                 <form method="POST" action="{{ route('admin.sertifikat.terbitkan', $peserta['id']) }}"
-            enctype="multipart/form-data" class="flex items-center gap-3">
+            class="flex items-center gap-3">
             @csrf
-
-            {{-- Input upload file PDF sertifikat --}}
-            <label class="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-600 bg-white hover:bg-slate-50 cursor-pointer transition">
-                <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11M8 11.5 12 15l4-3.5"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 19h14"/>
-                </svg>
-                <span id="namaFile">Pilih file PDF...</span>
-                <input type="file" name="file_sertifikat" accept=".pdf" required class="hidden"
-                    onchange="document.getElementById('namaFile').textContent = this.files[0]?.name ?? 'Pilih file PDF...'">
-            </label>
 
             <button type="submit"
                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition">
@@ -211,37 +200,79 @@
                                             <p class="text-xs font-semibold text-slate-600 tracking-[0.35em] uppercase">Ringkasan Penilaian Akhir</p>
                                             <p class="mt-3 text-xl font-bold text-slate-900 tracking-tight">Hasil Kriteria Penilaian</p>
                                         </div>
-                                        <div class="absolute inset-x-5 top-[34%] grid grid-cols-1 gap-3 text-sm text-slate-700">
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
-                                                    <p class="font-semibold text-slate-700">Keterampilan Teknis</p>
-                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['keterampilan_teknis'] ?? '—' }}%</p>
-                                                </div>
-                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
-                                                    <p class="font-semibold text-slate-700">Pemecahan Masalah</p>
-                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['pemecahan_masalah'] ?? '—' }}%</p>
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
-                                                    <p class="font-semibold text-slate-700">Kedisiplinan</p>
-                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['kedisiplinan'] ?? '—' }}%</p>
-                                                </div>
-                                                <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
-                                                    <p class="font-semibold text-slate-700">Kerjasama</p>
-                                                    <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['kerjasama'] ?? '—' }}%</p>
-                                                </div>
-                                            </div>
-                                            <div class="rounded-2xl bg-white/95 p-3 border border-slate-200">
-                                                <p class="font-semibold text-slate-700">Kehadiran</p>
-                                                <p class="mt-2 text-blue-600 font-bold">{{ $penilaianakhir['kehadiran'] ?? '—' }}%</p>
-                                            </div>
+                                        <div class="absolute inset-x-8 top-[28%] text-sm text-slate-700">
+                                            <table class="w-full border-collapse">
+                                                <thead>
+                                                    <tr class="bg-white/95">
+                                                        <th class="border border-slate-300 px-4 py-2 text-left font-semibold">Komponen Penilaian</th>
+                                                        <th class="border border-slate-300 px-4 py-2 text-center font-semibold">Nilai (Angka)</th>
+                                                        <th class="border border-slate-300 px-4 py-2 text-center font-semibold">Predikat</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="bg-white/85">
+                                                        <td class="border border-slate-300 px-4 py-2">Keterampilan Teknis</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">{{ $penilaianakhir['keterampilan_teknis'] ?? '—' }}</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">
+                                                            @if(isset($penilaianakhir['keterampilan_teknis']) && is_numeric($penilaianakhir['keterampilan_teknis']))
+                                                                {{ $penilaianakhir['keterampilan_teknis'] >= 85 ? 'A' : ($penilaianakhir['keterampilan_teknis'] >= 70 ? 'B' : ($penilaianakhir['keterampilan_teknis'] >= 60 ? 'C' : 'D')) }}
+                                                            @else
+                                                                —
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="bg-white/85">
+                                                        <td class="border border-slate-300 px-4 py-2">Pemecahan Masalah</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">{{ $penilaianakhir['pemecahan_masalah'] ?? '—' }}</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">
+                                                            @if(isset($penilaianakhir['pemecahan_masalah']) && is_numeric($penilaianakhir['pemecahan_masalah']))
+                                                                {{ $penilaianakhir['pemecahan_masalah'] >= 85 ? 'A' : ($penilaianakhir['pemecahan_masalah'] >= 70 ? 'B' : ($penilaianakhir['pemecahan_masalah'] >= 60 ? 'C' : 'D')) }}
+                                                            @else
+                                                                —
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="bg-white/85">
+                                                        <td class="border border-slate-300 px-4 py-2">Kedisiplinan</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">{{ $penilaianakhir['kedisiplinan'] ?? '—' }}</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">
+                                                            @if(isset($penilaianakhir['kedisiplinan']) && is_numeric($penilaianakhir['kedisiplinan']))
+                                                                {{ $penilaianakhir['kedisiplinan'] >= 85 ? 'A' : ($penilaianakhir['kedisiplinan'] >= 70 ? 'B' : ($penilaianakhir['kedisiplinan'] >= 60 ? 'C' : 'D')) }}
+                                                            @else
+                                                                —
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="bg-white/85">
+                                                        <td class="border border-slate-300 px-4 py-2">Kerjasama</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">{{ $penilaianakhir['kerjasama'] ?? '—' }}</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">
+                                                            @if(isset($penilaianakhir['kerjasama']) && is_numeric($penilaianakhir['kerjasama']))
+                                                                {{ $penilaianakhir['kerjasama'] >= 85 ? 'A' : ($penilaianakhir['kerjasama'] >= 70 ? 'B' : ($penilaianakhir['kerjasama'] >= 60 ? 'C' : 'D')) }}
+                                                            @else
+                                                                —
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="bg-white/85">
+                                                        <td class="border border-slate-300 px-4 py-2">Kehadiran</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">{{ $penilaianakhir['kehadiran'] ?? '—' }}</td>
+                                                        <td class="border border-slate-300 px-4 py-2 text-center">
+                                                            @if(isset($penilaianakhir['kehadiran']) && is_numeric($penilaianakhir['kehadiran']))
+                                                                {{ $penilaianakhir['kehadiran'] >= 85 ? 'A' : ($penilaianakhir['kehadiran'] >= 70 ? 'B' : ($penilaianakhir['kehadiran'] >= 60 ? 'C' : 'D')) }}
+                                                            @else
+                                                                —
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div class="absolute left-5 bottom-32 w-[46%] text-sm text-slate-700 bg-white/90 rounded-3xl p-4 border border-slate-200">
+                                        <div class="absolute left-8 bottom-24 w-[46%] text-sm text-slate-700 bg-white/90 rounded-xl p-4 border border-slate-200">
                                             <p class="font-semibold text-slate-700">Catatan Mentor</p>
-                                            <p class="mt-3 leading-relaxed text-slate-600">{{ $penilaianakhir['catatan'] ?? 'Belum ada catatan.' }}</p>
+                                            <p class="mt-2 leading-relaxed text-slate-600">{{ $penilaianakhir['catatan'] ?? 'Belum ada catatan.' }}</p>
                                         </div>
-                                        <div class="absolute right-5 bottom-28 w-[42%] text-right text-slate-700 bg-white/90 rounded-3xl p-4 border border-slate-200">
+                                        <div class="absolute right-8 bottom-20 w-[42%] text-right text-slate-700 bg-white/90 rounded-xl p-4 border border-slate-200">
                                             <p class="text-xs uppercase font-semibold tracking-[0.18em] text-slate-500">Nilai Akhir</p>
                                             <p class="mt-3 text-4xl font-black text-slate-900">{{ $penilaianakhir['nilai_akhir'] ?? '0' }}</p>
                                             <p class="mt-2 uppercase tracking-[0.18em] font-semibold {{ ($penilaianakhir['status_kelulusan'] ?? '') === 'Lulus' ? 'text-emerald-600' : 'text-amber-500' }}">
@@ -262,14 +293,8 @@
                             <div class="text-sm text-slate-500">Halaman <span id="slideIndicator">1</span> dari 2</div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <a href="{{ route('serti-template.file', '53.svg') }}" download="template-53.svg" class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
-                                Download Template Halaman 1
-                            </a>
-                            <a href="{{ route('serti-template.file', '54.svg') }}" download="template-54.svg" class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
-                                Download Template Halaman 2
-                            </a>
-                            <a href="{{ route('admin.sertifikat.download', $peserta['id']) }}" class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-400 text-white text-sm font-semibold hover:bg-amber-500 transition">
+                        <div class="grid grid-cols-1 gap-3">
+                            <a href="{{ route('admin.sertifikat.download', $peserta['id']) }}" target="_blank" class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-400 text-white text-sm font-semibold hover:bg-amber-500 transition">
                                 Download Sertifikat PDF
                             </a>
                         </div>

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SertifikatController extends Controller
 {
@@ -162,22 +163,71 @@ class SertifikatController extends Controller
         return view('admin.sertifikat-detail', compact('peserta', 'syarat', 'riwayat', 'penilaianakhir'));
     }
 
+    private function generateSertifikatPdf($p)
+    {
+        $periode = ($p->periode_mulai ? $p->periode_mulai->format('M Y') : '-')
+            . ' - ' .
+            ($p->periode_selesai ? $p->periode_selesai->format('M Y') : '-');
+
+        $tanggalTerbit = Carbon::now()->translatedFormat('d F Y');
+        $nomorSertifikat = 'PLN/CERT/' . date('Y') . '/' . str_pad($p->id, 4, '0', STR_PAD_LEFT);
+
+        $peserta = [
+            'nama' => $p->user->name ?? '-',
+            'universitas' => $p->instansi ?? '-',
+            'divisi' => $p->divisi ?? '-',
+            'mentor' => $p->profilMentor?->user?->name ?? '-',
+            'periode' => $periode,
+            'tanggal_terbit' => $tanggalTerbit,
+        ];
+
+        $penilaianakhir = $p->penilaianAkhir ? [
+            'keterampilan_teknis' => $p->penilaianAkhir->keterampilan_teknis,
+            'pemecahan_masalah' => $p->penilaianAkhir->pemecahan_masalah,
+            'kedisiplinan' => $p->penilaianAkhir->kedisiplinan,
+            'kerjasama' => $p->penilaianAkhir->kerjasama,
+            'kehadiran' => $p->penilaianAkhir->kehadiran,
+            'catatan' => $p->penilaianAkhir->catatan,
+            'nilai_akhir' => $p->penilaianAkhir->nilai_akhir,
+            'status_kelulusan' => $p->penilaianAkhir->status_kelulusan,
+        ] : [];
+
+        // Convert SVG to base64 for PDF
+        $template1Path = base_path('serti-template/53.svg');
+        $template2Path = base_path('serti-template/54.svg');
+        
+        $template1Base64 = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($template1Path));
+        $template2Base64 = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($template2Path));
+
+        $pdf = Pdf::loadView('admin.sertifikat-pdf', [
+            'peserta' => $peserta,
+            'penilaianakhir' => $penilaianakhir,
+            'nomorSertifikat' => $nomorSertifikat,
+            'template1Path' => $template1Base64,
+            'template2Path' => $template2Base64,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf;
+    }
+
     public function terbitkan(Request $request, $id)
     {
-        $p = ProfilPeserta::with(['penilaianAkhir', 'sertifikat'])->findOrFail($id);
+        $p = ProfilPeserta::with(['penilaianAkhir', 'sertifikat', 'user', 'profilMentor.user'])->findOrFail($id);
 
         // Pastikan sudah lulus sebelum terbitkan
         if ($p->penilaianAkhir?->status_kelulusan !== 'Lulus') {
             return back()->withErrors(['error' => 'Peserta belum dinyatakan lulus oleh mentor.']);
         }
 
-        $request->validate([
-            'file_sertifikat' => 'required|file|mimes:pdf|max:10240',
-        ]);
-
-        $file     = $request->file('file_sertifikat');
-        $filePath = $file->store('sertifikat', 'public');
         $nomorSertifikat = 'PLN/CERT/' . date('Y') . '/' . str_pad($p->id, 4, '0', STR_PAD_LEFT);
+
+        // Generate PDF
+        $pdf = $this->generateSertifikatPdf($p);
+        
+        // Save PDF to storage
+        $fileName = 'sertifikat_' . $p->id . '_' . time() . '.pdf';
+        $filePath = 'sertifikat/' . $fileName;
+        \Storage::disk('public')->put($filePath, $pdf->output());
 
         Sertifikat::updateOrCreate(
             ['peserta_id' => $p->id],
@@ -197,18 +247,26 @@ class SertifikatController extends Controller
 
     public function download($id)
     {
-        $p = ProfilPeserta::with('sertifikat')->findOrFail($id);
+        $p = ProfilPeserta::with(['sertifikat', 'penilaianAkhir', 'user', 'profilMentor.user'])->findOrFail($id);
         $sertifikat = $p->sertifikat;
 
-        if (!$sertifikat || $sertifikat->status !== 'Terbit' || !$sertifikat->file_path) {
-            return back()->withErrors(['error' => 'File sertifikat belum tersedia atau belum diterbitkan.']);
+        // If sertifikat exists and has file, use it
+        if ($sertifikat && $sertifikat->status === 'Terbit' && $sertifikat->file_path) {
+            $path = storage_path('app/public/' . $sertifikat->file_path);
+            if (file_exists($path)) {
+                return response()->file($path, [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="Sertifikat_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $p->user->name) . '.pdf"'
+                ]);
+            }
         }
 
-        $path = storage_path('app/public/' . $sertifikat->file_path);
-        if (!file_exists($path)) {
-            abort(404);
+        // If no file, generate on the fly
+        if ($p->penilaianAkhir?->status_kelulusan === 'Lulus') {
+            $pdf = $this->generateSertifikatPdf($p);
+            return $pdf->stream('Sertifikat_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $p->user->name) . '.pdf');
         }
 
-        return response()->download($path, 'Sertifikat_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $p->user->name) . '.pdf');
+        return back()->withErrors(['error' => 'Sertifikat belum dapat diunduh.']);
     }
 }

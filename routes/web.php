@@ -108,7 +108,7 @@ Route::middleware(['auth', 'role.admin'])->prefix('admin')->name('admin.')->grou
 });
 
 Route::get('/serti-template/{filename}', function ($filename) {
-    $allowed = ['53.svg', '54.svg'];
+    $allowed = ['1.svg', '2.svg', '53.svg', '54.svg'];
     if (!in_array($filename, $allowed, true)) {
         abort(404);
     }

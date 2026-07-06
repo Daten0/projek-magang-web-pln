@@ -162,8 +162,8 @@
 │   ├── 🐘 console.php
 │   └── 🐘 web.php
 ├── 📁 serti-template
-│   ├── 🖼️ 53.svg
-│   └── 🖼️ 54.svg
+│   ├── 🖼️ 1.svg
+│   └── 🖼️ 2.svg
 ├── 📁 storage
 │   ├── 📁 app
 │   │   ├── 📁 private
