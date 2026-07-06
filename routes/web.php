@@ -46,7 +46,7 @@ Route::middleware(['auth', 'role.peserta'])->group(function () {
     Route::get('/logbook/create', [LogbookController::class, 'create'])->name('logbook.create');
     Route::post('/logbook', [LogbookController::class, 'store'])->name('logbook.store');
     Route::get('/logbook/{id}/edit', [LogbookController::class, 'edit'])->name('logbook.edit');
-Route::put('/logbook/{id}', [LogbookController::class, 'update'])->name('logbook.update');
+    Route::put('/logbook/{id}', [LogbookController::class, 'update'])->name('logbook.update');
     Route::get('/laporan-akhir', [LaporanAkhirController::class, 'index'])->name('laporan-akhir.index');
     Route::post('/laporan-akhir', [LaporanAkhirController::class, 'store'])->name('laporan-akhir.store');
     Route::get('/sertifikat', [SertifikatController::class, 'index'])->name('sertifikat.index');
@@ -75,8 +75,8 @@ Route::middleware(['auth', 'role.mentor'])->prefix('mentor')->name('mentor.')->g
     Route::post('/penilaian-akhir/{id}', [PenilaianAkhirController::class, 'store'])->name('penilaian-akhir.store');
     Route::get('/profil', [MentorProfilController::class, 'index'])->name('profil');
     Route::get('/profil/edit', [MentorProfilController::class, 'edit'])->name('profil.edit');
-    Route::post('/profil/edit', [MentorProfilController::class, 'updateInfo'])->name('profil.edit.update');
-    Route::post('/profil', [MentorProfilController::class, 'update'])->name('profil.update');
+    Route::put('/profil/edit', [MentorProfilController::class, 'updateInfo'])->name('profil.edit.update');
+    Route::put('/profil', [MentorProfilController::class, 'update'])->name('profil.update');
 });
 
 // ================= ADMIN (harus login) =================
